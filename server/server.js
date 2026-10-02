@@ -59,6 +59,12 @@ app.use('/api/contact', contactRoutes);
 const notificationRoutes = require('./routes/notificationRoutes');
 app.use('/api/notifications', notificationRoutes);
 
+// Exercise & Food Item Libraries (Data-driven plan builder)
+const exerciseRoutes = require('./routes/exerciseRoutes');
+const foodRoutes = require('./routes/foodRoutes');
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/foods', foodRoutes);
+
 // Public Membership Plans
 const { getPublicPlans } = require('./controllers/paymentController');
 app.get('/api/membership-plans', getPublicPlans);
@@ -111,6 +117,10 @@ const startServer = async () => {
   try {
     // 1. Connect MongoDB
     await connectDB();
+
+    // 1.1 Seed Exercise & Food libraries if empty
+    const { seedLibrariesIfEmpty } = require('./utils/seedLibraries');
+    await seedLibrariesIfEmpty();
 
     // 2. Initialize Phase 8 Scheduled Expiry Tasks (node-cron daily check)
     const { initScheduledTasks } = require('./services/scheduler');

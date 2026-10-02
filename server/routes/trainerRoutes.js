@@ -14,7 +14,12 @@ const {
   getTrainerMemberWorkouts,
   getWorkoutPlanById,
   updateWorkoutPlan,
+  publishWorkoutPlan,
+  duplicateWorkoutPlan,
+  archiveWorkoutPlan,
+  deleteWorkoutPlan,
   toggleWorkoutPlanStatus,
+  getTrainerMemberWorkoutLogs,
 } = require('../controllers/workoutController');
 
 const {
@@ -22,6 +27,10 @@ const {
   getTrainerMemberDiets,
   getDietPlanById,
   updateDietPlan,
+  publishDietPlan,
+  duplicateDietPlan,
+  archiveDietPlan,
+  deleteDietPlan,
   toggleDietPlanStatus,
 } = require('../controllers/dietController');
 
@@ -58,10 +67,16 @@ router.route('/members/:memberId/workouts')
   .get(getTrainerMemberWorkouts)
   .post(createTrainerWorkout);
 
+router.get('/members/:memberId/workout-logs', getTrainerMemberWorkoutLogs);
+
 router.route('/workouts/:planId')
   .get(getWorkoutPlanById)
-  .patch(updateWorkoutPlan);
+  .patch(updateWorkoutPlan)
+  .delete(deleteWorkoutPlan);
 
+router.post('/workouts/:planId/publish', publishWorkoutPlan);
+router.post('/workouts/:planId/duplicate', duplicateWorkoutPlan);
+router.patch('/workouts/:planId/archive', archiveWorkoutPlan);
 router.patch('/workouts/:planId/status', toggleWorkoutPlanStatus);
 
 // Diet Plans
@@ -71,8 +86,12 @@ router.route('/members/:memberId/diets')
 
 router.route('/diets/:planId')
   .get(getDietPlanById)
-  .patch(updateDietPlan);
+  .patch(updateDietPlan)
+  .delete(deleteDietPlan);
 
+router.post('/diets/:planId/publish', publishDietPlan);
+router.post('/diets/:planId/duplicate', duplicateDietPlan);
+router.patch('/diets/:planId/archive', archiveDietPlan);
 router.patch('/diets/:planId/status', toggleDietPlanStatus);
 
 // Training Sessions

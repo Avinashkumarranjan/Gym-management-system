@@ -17,11 +17,26 @@ const {
 const {
   getMemberWorkout,
   getMemberWorkoutHistory,
+  duplicateMemberCustomWorkout,
+  getMemberCustomWorkout,
+  createMemberCustomWorkout,
+  updateMemberCustomWorkout,
+  deleteMemberCustomWorkout,
+  logMemberWorkoutCompletion,
+  getMemberWorkoutLogs,
+  getMemberExercisePerformanceHistory,
 } = require('../controllers/workoutController');
 
 const {
   getMemberDiet,
   getMemberDietHistory,
+  duplicateMemberCustomDiet,
+  getMemberCustomDiet,
+  createMemberCustomDiet,
+  updateMemberCustomDiet,
+  logMemberDietCompletion,
+  getMemberDietLogs,
+  getMemberNutritionHistory,
 } = require('../controllers/dietController');
 
 const {
@@ -58,13 +73,28 @@ router.route('/trainer-request')
   .get(getMyTrainerAssignment)
   .post(requestTrainer);
 
-// Workout Plan (Self)
+// Workout Plan (Self - Prescribed & Custom)
 router.get('/workout', getMemberWorkout);
 router.get('/workouts/history', getMemberWorkoutHistory);
+router.post('/workouts/duplicate-custom', duplicateMemberCustomWorkout);
+router.get('/workouts/custom', getMemberCustomWorkout);
+router.post('/workouts/custom', createMemberCustomWorkout);
+router.patch('/workouts/custom/:id', updateMemberCustomWorkout);
+router.delete('/workouts/custom/:id', deleteMemberCustomWorkout);
+router.post('/workouts/log', logMemberWorkoutCompletion);
+router.get('/workouts/logs', getMemberWorkoutLogs);
+router.get('/workouts/exercise-history', getMemberExercisePerformanceHistory);
 
-// Diet Plan (Self)
+// Diet Plan (Self - Prescribed & Custom)
 router.get('/diet', getMemberDiet);
 router.get('/diets/history', getMemberDietHistory);
+router.post('/diets/duplicate-custom', duplicateMemberCustomDiet);
+router.get('/diets/custom', getMemberCustomDiet);
+router.post('/diets/custom', createMemberCustomDiet);
+router.patch('/diets/custom/:id', updateMemberCustomDiet);
+router.post('/diets/log', logMemberDietCompletion);
+router.get('/diets/logs', getMemberDietLogs);
+router.get('/diets/nutrition-history', getMemberNutritionHistory);
 
 // Training Sessions
 router.route('/sessions')

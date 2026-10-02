@@ -2,10 +2,24 @@ const mongoose = require('mongoose');
 
 const exerciseSchema = new mongoose.Schema(
   {
+    exercise: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Exercise',
+      default: null,
+    },
     name: {
       type: String,
       required: [true, 'Exercise name is required'],
       trim: true,
+    },
+    customExerciseName: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    order: {
+      type: Number,
+      default: 0,
     },
     sets: {
       type: Number,
@@ -29,7 +43,68 @@ const exerciseSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    load: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    unit: {
+      type: String,
+      trim: true,
+      default: 'kg',
+    },
+    tempo: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    rpe: {
+      type: Number,
+      min: 1,
+      max: 10,
+      default: null,
+    },
+    rir: {
+      type: Number,
+      min: 0,
+      max: 10,
+      default: null,
+    },
+    techniqueTag: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    supersetGroup: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    duration: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    distance: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    caloriesTarget: {
+      type: Number,
+      default: null,
+    },
+    trainerNote: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     notes: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    instructions: {
       type: String,
       trim: true,
       default: '',
@@ -45,10 +120,50 @@ const dailyScheduleSchema = new mongoose.Schema(
       enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       required: true,
     },
+    dayType: {
+      type: String,
+      enum: ['workout', 'rest', 'recovery', 'not_planned'],
+      default: 'workout',
+    },
+    isRestDay: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     focus: {
       type: String,
       trim: true,
-      default: 'Rest & Recovery',
+      default: 'General Training',
+    },
+    estimatedDuration: {
+      type: Number,
+      default: 60, // in minutes
+    },
+    warmupNotes: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    cooldownNotes: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    generalInstructions: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    restDayNotes: {
+      recoveryNotes: { type: String, trim: true, default: '' },
+      stepsTarget: { type: Number, default: 8000 },
+      sleepTargetHours: { type: Number, default: 8 },
+      hydrationLiters: { type: Number, default: 3 },
+      mobilityNotes: { type: String, trim: true, default: '' },
     },
     exercises: [exerciseSchema],
   },
@@ -61,11 +176,13 @@ const workoutPlanSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Member reference is required'],
+      index: true,
     },
     trainer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Trainer reference is required'],
+      default: null,
+      index: true,
     },
     title: {
       type: String,
@@ -82,6 +199,67 @@ const workoutPlanSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: 'General Fitness',
+    },
+    difficulty: {
+      type: String,
+      enum: ['Beginner', 'Intermediate', 'Advanced', 'Athlete'],
+      default: 'Intermediate',
+    },
+    splitType: {
+      type: String,
+      enum: [
+        'Full Body',
+        'Upper / Lower',
+        'Push Pull Legs',
+        'Bro Split',
+        'Strength Split',
+        'Powerbuilding',
+        'Hypertrophy',
+        'HIIT',
+        'Cardio',
+        'Functional Training',
+        'Mobility',
+        'Custom Split',
+      ],
+      default: 'Custom Split',
+    },
+    duration: {
+      type: String,
+      trim: true,
+      default: '12 Weeks',
+    },
+    coachInstructions: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    status: {
+      type: String,
+      enum: ['draft', 'active', 'archived'],
+      default: 'active',
+      index: true,
+    },
+    version: {
+      type: Number,
+      default: 1,
+    },
+    publishedAt: {
+      type: Date,
+      default: null,
+    },
+    archivedAt: {
+      type: Date,
+      default: null,
+    },
+    derivedFrom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'WorkoutPlan',
+      default: null,
+    },
+    isMemberCustom: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
     startDate: {
       type: Date,
@@ -102,9 +280,11 @@ const workoutPlanSchema = new mongoose.Schema(
   }
 );
 
-// Compound index for querying a member's active plans
+// Compound indexes
 workoutPlanSchema.index({ member: 1, isActive: 1 });
+workoutPlanSchema.index({ member: 1, status: 1 });
 workoutPlanSchema.index({ trainer: 1, isActive: 1 });
+workoutPlanSchema.index({ member: 1, isMemberCustom: 1 });
 
 const WorkoutPlan = mongoose.model('WorkoutPlan', workoutPlanSchema);
 

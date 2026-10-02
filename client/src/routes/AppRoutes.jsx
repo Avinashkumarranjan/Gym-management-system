@@ -138,10 +138,14 @@ const AppRoutes = () => {
         <Route path="members/:memberId" element={<AssignedMemberDetails />} />
         <Route path="workouts" element={<TrainerWorkouts />} />
         <Route path="members/:memberId/workout" element={<TrainerWorkoutBuilder />} />
+        <Route path="members/:memberId/workout/new" element={<TrainerWorkoutBuilder />} />
         <Route path="workouts/:planId/edit" element={<TrainerWorkoutBuilder />} />
+        <Route path="workout-plans/:planId/edit" element={<TrainerWorkoutBuilder />} />
         <Route path="diets" element={<TrainerDiets />} />
         <Route path="members/:memberId/diet" element={<TrainerDietBuilder />} />
+        <Route path="members/:memberId/diet/new" element={<TrainerDietBuilder />} />
         <Route path="diets/:planId/edit" element={<TrainerDietBuilder />} />
+        <Route path="diet-plans/:planId/edit" element={<TrainerDietBuilder />} />
         <Route path="schedule" element={<TrainerSchedule />} />
       </Route>
 

@@ -346,7 +346,10 @@ const assignTrainer = async (req, res, next) => {
     const { id } = req.params;
     const { trainerId } = req.body;
 
-    const profile = await MemberProfile.findById(id);
+    let profile = await MemberProfile.findById(id);
+    if (!profile) {
+      profile = await MemberProfile.findOne({ user: id });
+    }
     if (!profile) {
       return res.status(404).json({ success: false, message: 'Member profile not found' });
     }
